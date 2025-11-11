@@ -94,19 +94,34 @@ SELECT DISTINCT a.first_name AS nombre_actor , a.last_name AS apellido_actor -- 
     
 -- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.    
 
-/*Este ejercicio se puede resolver utilizando LIKE o Regex*/
+SELECT title
+FROM film
+WHERE description REGEXP '(^|[^a-zA-Z0-9])dog([^a-zA-Z0-9]|$)'  	-- Uso un patrón alternativo para indicar límites de palabra --
+   OR description REGEXP '(^|[^a-zA-Z0-9])cat([^a-zA-Z0-9]|$)'; /* 	(^|[^a-zA-Z0-9]) → asegura que la palabra comience al inicio o esté precedida por un carácter no alfanumérico.
+																	([^a-zA-Z0-9]|$) → asegura que termine antes de un carácter no alfanumérico o al final de la cadena.
+																		Así “dog” y “cat” se detectan correctamente, pero “cadog” o “catalogue” no.*/
 
--- con LIKE 
+/*/
+SELECT title AS titulo
+	FROM film
+	WHERE description REGEXP "\\bdog\\b" OR description REGEXP "\\bcat\\b"; -- funciona por mi version de MySQL /*/
+
+/* si hago un LIKE y hay alguna palabra que contenga las silabas "cat" o "dog" en la descripción me lo reconoceria y me la listaria
 
 SELECT title AS titulo
 	FROM film 
     WHERE description LIKE "%dog%" OR description LIKE "%cat%"; -- REPETIR LA COLUMNA EN LA CONDICION
     
--- con REGEX
+ ------
+ 
+con REGEX de esta manera ocurriría la mismo 
 
 SELECT title AS titulo
 	FROM film
 	WHERE description REGEXP 'dog|cat';
+    
+*/
+    
     
 -- 15. Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor
 
@@ -157,13 +172,65 @@ SELECT c.name AS categoria_pelicula, AVG(f.length) AS promedio_duracion
 	FROM category AS c
     INNER JOIN film_category AS fc
 		ON fc.category_id = c.category_id
-	INNER JOIN film AS f
+	INNER JOIN film AS f 
 		ON f.film_id = fc.film_id
 	GROUP BY c.category_id
     HAVING AVG(f.length) > 120;
 
 
+-- 21. Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto con la cantidad de películas en las que han actuado
+
+SELECT a.first_name AS nombre_actor, COUNT(fa.film_id) AS cantidad_peliculas_actuadas
+	FROM actor AS a
+	INNER JOIN film_actor AS fa
+	ON a.actor_id = fa.actor_id
+	GROUP BY a.actor_id
+	HAVING COUNT(fa.film_id) >= 5;
+  
+  
+/* 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días.
+ Utiliza una subconsulta para encontrar los rental_ids con una duración superior a 5 días y luego selecciona las
+ películas correspondientes. */
+ 
+ SELECT DISTINCT f.title AS Pelicula
+	FROM film AS f
+	INNER JOIN inventory AS i
+		ON f.film_id = i.film_id
+	INNER JOIN rental AS r
+		ON i.inventory_id = r.inventory_id
+	WHERE r.rental_id IN ( SELECT r2.rental_id  -- Esta subsonsulta devuelve los rental_id correspondientes a los alquileres de +5 dias
+								FROM rental as r2
+								WHERE DATEDIFF(r2.return_date, r2.rental_date) > 5); /* La función DATEDIFF() sirve para calcular 
+																	la diferencia entre dos fechas
+																	devolviendo el número de días entre ellas.*/
+                                                                    
+                                                                    
+
+/* 23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
+"Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
+categoría "Horror" y luego exclúyelos de la lista de actores. */
+
+SELECT a.first_name AS nombre_actor , a.last_name AS apellido_actor
+	FROM actor AS a	
+	WHERE a.actor_id NOT IN ( SELECT actor_id -- con esta subconsulta extraigo los id de los actores que si actuaron en peliculas de horror
+									FROM film_actor
+									WHERE film_id IN ( SELECT film_id -- con esta sub consulta traigo los id de las peliculas que son de la cat horror
+															FROM film_category
+															WHERE category_id IN ( SELECT category_id -- con esta subconsulta extraigo el category id de la cat horror
+																						FROM category
+																						WHERE name = "Horror")));
 
 
-
+-- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la tabla film.
+    
+SELECT f.title as titulo_comedias
+	FROM film as f
+	INNER JOIN film_category as fc
+	ON f.film_id = fc.film_id
+	INNER JOIN category as c
+	ON fc.category_id = c.category_id
+	WHERE f.length > 180 AND c.name = "comedy";
+    
+    
+    
     
