@@ -95,9 +95,9 @@ SELECT DISTINCT a.first_name AS nombre_actor , a.last_name AS apellido_actor -- 
 -- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.    
 
 SELECT title
-FROM film
-WHERE description REGEXP '(^|[^a-zA-Z0-9])dog([^a-zA-Z0-9]|$)'  	-- Uso un patrón alternativo para indicar límites de palabra --
-   OR description REGEXP '(^|[^a-zA-Z0-9])cat([^a-zA-Z0-9]|$)'; /* 	(^|[^a-zA-Z0-9]) → asegura que la palabra comience al inicio o esté precedida por un carácter no alfanumérico.
+	FROM film
+	WHERE description REGEXP '(^|[^a-zA-Z0-9])dog([^a-zA-Z0-9]|$)'  	-- Uso un patrón alternativo para indicar límites de palabra --
+		OR description REGEXP '(^|[^a-zA-Z0-9])cat([^a-zA-Z0-9]|$)'; /* 	(^|[^a-zA-Z0-9]) → asegura que la palabra comience al inicio o esté precedida por un carácter no alfanumérico.
 																	([^a-zA-Z0-9]|$) → asegura que termine antes de un carácter no alfanumérico o al final de la cadena.
 																		Así “dog” y “cat” se detectan correctamente, pero “cadog” o “catalogue” no.*/
 
@@ -146,9 +146,9 @@ SELECT title AS pelicula -- , release_year (me sirve para revisar que la condici
 SELECT f.title AS pelicula
 	FROM film AS f
 	INNER JOIN film_category as fc
-	ON f.film_id = fc.film_id
+		ON f.film_id = fc.film_id
 	INNER JOIN category as c
-	ON fc.category_id = c.category_id
+		ON fc.category_id = c.category_id
 	WHERE c.name = "Family"; 
        
 -- 18. Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
@@ -183,7 +183,7 @@ SELECT c.name AS categoria_pelicula, AVG(f.length) AS promedio_duracion
 SELECT a.first_name AS nombre_actor, COUNT(fa.film_id) AS cantidad_peliculas_actuadas
 	FROM actor AS a
 	INNER JOIN film_actor AS fa
-	ON a.actor_id = fa.actor_id
+		ON a.actor_id = fa.actor_id
 	GROUP BY a.actor_id
 	HAVING COUNT(fa.film_id) >= 5;
   
@@ -226,9 +226,9 @@ SELECT a.first_name AS nombre_actor , a.last_name AS apellido_actor
 SELECT f.title as titulo_comedias
 	FROM film as f
 	INNER JOIN film_category as fc
-	ON f.film_id = fc.film_id
+		ON f.film_id = fc.film_id
 	INNER JOIN category as c
-	ON fc.category_id = c.category_id
+		ON fc.category_id = c.category_id
 	WHERE f.length > 180 AND c.name = "comedy";
     
     
