@@ -43,16 +43,17 @@ ejercicios, entre ellos:
 - Filtrado por condiciones (`WHERE`, `BETWEEN`, `LIKE`)
 - Uso de funciones de agregación (`COUNT`, `AVG`, etc.)
 - Agrupaciones y filtrados con `GROUP BY` y `HAVING`
-- Uso de `JOIN`, `UNION` y subconsultas
+- Uso de distintos tipos de `JOIN`, y subconsultas
+- Utilización de condicionales `WHERE` y `HAVING`
 
 ------------------------------------------------------------------------
 
 
 ## 🎯 Objetivos de aprendizaje
 
--   Dominar consultas básicas (`SELECT`, `INSERT`, `UPDATE`, `DELETE`)
+-   Dominio de consultas en SQL
 -   Usar correctamente **joins**, **subconsultas** y **funciones de
-    agrupación**
+    agrupación**    
 -   Aplicar buenas prácticas en la escritura y estructura del código
     SQL
 -   Practicar la comunicación técnica durante la revisión del ejercicio
