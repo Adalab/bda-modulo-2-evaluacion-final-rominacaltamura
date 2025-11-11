@@ -227,10 +227,31 @@ SELECT f.title as titulo_comedias
 	FROM film as f
 	INNER JOIN film_category as fc
 		ON f.film_id = fc.film_id
-	INNER JOIN category as c
+	INNER JOIN category as c  
 		ON fc.category_id = c.category_id
 	WHERE f.length > 180 AND c.name = "comedy";
     
-    
+ 
+ 
+-- ****BONUS**** --
+
+/* 25. Encuentra todos los actores que han actuado juntos en al menos una película. 
+La consulta debe mostrar el nombre y apellido de los actores
+y el número de películas en las que han actuado juntos.*/
+
+SELECT
+    CONCAT(a1.first_name, ' ', a1.last_name) AS Actor1,  -- Nombre y apellido del primer actor
+    CONCAT(a2.first_name, ' ', a2.last_name) AS Actor2,  -- Nombre y apellido del segundo actor
+	COUNT(fa1.film_id) AS peliculas_juntos  -- Cantidad de películas en las que actuan juntos
+FROM actor AS a1                        -- Primer actor del par
+INNER JOIN film_actor AS fa1            -- Hago una union con la tabla que relaciona actores con películas para poder evaluar las actuaciones
+    ON a1.actor_id = fa1.actor_id
+INNER JOIN film_actor AS fa2            -- Otra vez film_actor para el segundo actor
+    ON fa1.film_id = fa2.film_id        -- Ambos actores deben haber estado en la misma película
+INNER JOIN actor AS a2                  -- Segundo actor del par
+    ON fa2.actor_id = a2.actor_id
+    AND a1.actor_id < a2.actor_id       -- Evita duplicar pares y emparejar actor consigo mismo
+GROUP BY a1.actor_id, a2.actor_id;      -- Agrupa por el par de actores
+
     
     
